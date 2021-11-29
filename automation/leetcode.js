@@ -12,10 +12,15 @@
         const strongs = [...document.querySelectorAll("strong")];
         const inputLabels = strongs.filter(s => s.textContent === "Input:");
         return inputLabels.map(l => {
-            const input = l.nextSibling;
-            const output = input.nextSibling.nextSibling;
+            let input = "";
+            let crtEl = l.nextSibling;
+            while (crtEl.textContent !== "Output:") {
+                input += crtEl.textContent;
+                crtEl = crtEl.nextSibling;
+            }
+            const output = crtEl.nextSibling;
             return [
-                input.textContent.trim(),
+                input.trim(),
                 output.textContent.trim()
             ]
         });
