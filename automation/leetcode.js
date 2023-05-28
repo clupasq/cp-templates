@@ -8,44 +8,48 @@
         document.body.removeChild(dummy);
     };
 
-    const getTests = () => {
-        const strongs = [...document.querySelectorAll("strong")];
-        const inputLabels = strongs.filter(s => s.textContent === "Input:");
-        return inputLabels.map(l => {
-            let input = "";
-            let crtEl = l.nextSibling;
-            while (crtEl.textContent !== "Output:") {
-                input += crtEl.textContent;
-                crtEl = crtEl.nextSibling;
+    const parseTestBlock = (testBlock) => {
+        const test = [null, null];
+        for (const c of testBlock.childNodes) {
+            if (c.textContent === "Input:") {
+                test[0] = c.nextSibling.textContent.trim();
             }
-            const output = crtEl.nextSibling;
-            return [
-                input.trim(),
-                output.textContent.trim()
-            ]
-        });
+            if (c.textContent === "Output:") {
+                test[1] = c.nextSibling.textContent.trim();
+            }
+        }
+        return test;
     };
 
-    const getCode = (lang="python3") => {
-        const def = pageData.codeDefinition.find(r => r.value === lang);
-        return def.defaultCode;
+    const parseTestBlocks = () => {
+        const testBlocks = [...document.querySelectorAll("pre")];
+        return testBlocks.map(parseTestBlock);
+    };
+
+    const getCode = () => {
+        let code = "";
+        const codeLines = [...document.querySelectorAll(".view-line")];
+        for (const l of codeLines) {
+            code += l.textContent + "\n";
+        }
+        return code
     };
 
     const getFunctionName = (code) => {
-        return code.split("\n")[1].trim().split(" ")[1].split("(")[0];
+        return code.split("\n")[1].trim().split(/\s/)[1].split("(")[0];
     };
 
     const code = getCode();
     const fnName = getFunctionName(code);
-    const tests = getTests();
-
-    let template = `\nfrom typing import List\n\n${code}        pass\n\nlc_solution = Solution()\n\n`;
-
+    const tests = parseTestBlocks();
+    let template = `\nfrom typing import List\n\n${code}
+    pass\n\nlc_solution = Solution()\n\n`;
     for (let i = 0; i < tests.length; i++) {
         const [input, output] = tests[i];
-        const test = `def test_example_${i}():\n    actual = lc_solution.${fnName}(${input})\n    assert ${output} == actual\n\n`;
+        const test = `def test_example_${i}():
+    actual = lc_solution.${fnName}(${input})
+    assert ${output} == actual\n\n`;
         template += test
     }
-
     copyToClipboard(template);
 })()
