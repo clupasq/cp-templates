@@ -30,7 +30,8 @@
         let code = "";
         const codeLines = [...document.querySelectorAll(".view-line")];
         for (const l of codeLines) {
-            code += l.textContent + "\n";
+            const line = l.textContent.replace(/\s/g, " ");
+            code += line + "\n";
         }
         return code
     };
