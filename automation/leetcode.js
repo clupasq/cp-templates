@@ -44,11 +44,11 @@
     const fnName = getFunctionName(code);
     const tests = parseTestBlocks();
     let template = `\nfrom typing import List\n\n${code}
-    pass\n\nlc_solution = Solution()\n\n`;
+        pass\n\nlc_solution = Solution()\n\n`;
     for (let i = 0; i < tests.length; i++) {
         const [input, output] = tests[i];
-        const test = `def test_example_${i}():
-    actual = lc_solution.${fnName}(${input})
+        const test = `def test_example_${i}():\n
+    actual = lc_solution.${fnName}(${input})\n
     assert ${output} == actual\n\n`;
         template += test
     }
