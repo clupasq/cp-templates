@@ -43,8 +43,16 @@
     const code = getCode();
     const fnName = getFunctionName(code);
     const tests = parseTestBlocks();
-    let template = `\nfrom typing import List\n\n${code}
-        pass\n\nlc_solution = Solution()\n\n`;
+
+    let template = "\nfrom typing import List\n";
+    template += "try:\n";
+    template += "    from icecream import ic\n";
+    template += "except ImportError:\n";
+    template += "    def ic(x=None):\n";
+    template += "        return x\n\n";
+    template += code;
+    template += "    pass\n\nlc_solution = Solution()\n\n";
+
     for (let i = 0; i < tests.length; i++) {
         const [input, output] = tests[i];
         const test = `def test_example_${i}():\n
