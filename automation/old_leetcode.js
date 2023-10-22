@@ -43,7 +43,7 @@
     template += "try:\n";
     template += "    from icecream import ic\n";
     template += "except ImportError:\n";
-    template += "    def ic(x=None):\n";
+    template += "    def ic(*x):\n";
     template += "        return x\n\n";
     template += code;
     template += "pass\n\nlc_solution = Solution()\n\n";
